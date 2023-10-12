@@ -1,5 +1,8 @@
-<template>
-    <button class="button button1" onclick={handleButtonClick}>Add AI Actions to Plan</button>
 
-    
+<template>
+    <button class="button button1" onclick={openModal} >Add AI Actions to Plan</button>
+    <c-display-modal if:true={showModal} modal-data={modalData} onclosemodal={closeModal}></c-display-modal>
 </template>
+
+<!-- onclick={openModal} -->
+<!-- onclick={handleButtonClick} -->

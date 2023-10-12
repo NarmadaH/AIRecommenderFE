@@ -5,9 +5,11 @@ import handleBatchAssessmentResponses from '@salesforce/apex/LWCController.handl
 import { NavigationMixin } from 'lightning/navigation';
 
 export default class AIBatchButton extends NavigationMixin (LightningElement) {
-
+    @track showModal = false;
     @api recordId;
     @track AIPlanRecordId;
+    @track modalError; 
+    modalData; 
 
     // // Wire the method and get the result
     // @wire(handleBatchAssessmentResponses, { assessmentRecordId: '$recordId' })
@@ -21,7 +23,53 @@ export default class AIBatchButton extends NavigationMixin (LightningElement) {
     //     }
     // }
 
+
+//     openModal(){
+//         this.handleButtonClick();
+//         // this.modalData = "integrated"
+//          //this.showModal = true;
+       
+//         //console.log(this.modalData)
+//         //this.getmodalData();
+// }
+
+
+
+
+openModal(){
+    this.handleButtonClick()
+        .then(() => {
+            // The promise has resolved, set modalData with the result
+            this.getmodalData();
+            //this.modalData = this.AIPlanRecordId;
+            //this.showModal = true; // Open the modal
+        })
+        .catch(error => {
+            console.log('Error in openModal', error);
+            this.modalError = error;
+            this.getmodalData();
+            //this.showModal = true; // Open the modal with an error message
+        });
+}
+
+
+
+closeModal() {
+    this.showModal = false;
+}
+
+getmodalData(){
+
+    //this.modalData = 'handled integration'
+    if (this.modalError) {
+        // Result is empty or falsy
+       this.modalData = this.modalError;
+        this.showModal = true;
+    } 
+}
+
     handleButtonClick() {
+        return new Promise((resolve, reject) => {
         
         handleBatchAssessmentResponses({ assessmentRecordId :this.recordId })
             .then(result => {
@@ -40,6 +88,7 @@ export default class AIBatchButton extends NavigationMixin (LightningElement) {
                 //         actionName: 'view'
                 //     }
                 // });
+                
 
                 if (this.AIPlanRecordId == null) {
                     onsole.log('Error handleBatchAssessmentResponses - Null plan ID');
@@ -58,10 +107,13 @@ export default class AIBatchButton extends NavigationMixin (LightningElement) {
                     });
 
                     console.log('Navigating handleBatchAssessmentResponses');
+                    resolve();
             }})
             .catch(error => {
                 console.log('Error calling handleBatchAssessmentResponses');
+                this.modalError = error; 
+                reject(error); 
             });
-    }
+    });
 
-}
+}}

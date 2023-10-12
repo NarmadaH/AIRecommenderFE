@@ -1,5 +1,11 @@
-<template>
+<!-- <template>
     <button class="button button1" onclick={handleButtonClick}>Generate AI Settlement Plan</button>
 
     
+</template> -->
+
+
+<template>
+    <button class="button button1" onclick={openModal} >Generate AI Settlement Plan</button>
+    <c-display-modal if:true={showModal} modal-data={modalData} onclosemodal={closeModal}></c-display-modal>
 </template>
