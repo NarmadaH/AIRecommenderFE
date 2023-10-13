@@ -38,12 +38,12 @@ export default class AIBatchButton extends NavigationMixin (LightningElement) {
 
 openModal(){
     this.handleButtonClick()
-        .then(() => {
-            // The promise has resolved, set modalData with the result
-            this.getmodalData();
-            //this.modalData = this.AIPlanRecordId;
-            //this.showModal = true; // Open the modal
-        })
+        // .then(() => {
+        //     // The promise has resolved, set modalData with the result
+        //     this.getmodalData();
+        //     //this.modalData = this.AIPlanRecordId;
+        //     //this.showModal = true; // Open the modal
+        // })
         .catch(error => {
             console.log('Error in openModal', error);
             this.modalError = error;
