@@ -124,7 +124,7 @@ handleButtonClick() {
                 console.log('Error calling handleAIIntergration');
                 console.log(error);
                 // Handle API errors here
-                this.modalError = error;
+                this.modalError = 'Error - Adding AI actions to plan failed';
                 reject(error); // Reject the promise on error
             });
     });

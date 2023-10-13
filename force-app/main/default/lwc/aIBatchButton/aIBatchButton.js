@@ -78,16 +78,6 @@ getmodalData(){
                 console.log(result);
 
                 this.AIPlanRecordId = result;
-
-                // Navigate to the Account record page with the given ID
-                // this[NavigationMixin.Navigate]({
-                //     type: 'standard__recordPage',
-                //     attributes: {
-                //         recordId: '001Aw000001AJlZIAW',
-                //         objectApiName: 'Account', // Replace with your object's API name
-                //         actionName: 'view'
-                //     }
-                // });
                 
 
                 if (this.AIPlanRecordId == null) {
@@ -111,7 +101,7 @@ getmodalData(){
             }})
             .catch(error => {
                 console.log('Error calling handleBatchAssessmentResponses');
-                this.modalError = error; 
+                this.modalError = 'Error - Generating AI plan failed'; 
                 reject(error); 
             });
     });
