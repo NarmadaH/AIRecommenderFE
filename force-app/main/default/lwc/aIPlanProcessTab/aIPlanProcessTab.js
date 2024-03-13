@@ -132,7 +132,8 @@ export default class AIPlanProcessTab extends LightningElement {
             id: String(Math.floor(100000 + Math.random() * 900000)),
             name: statement,
             Recommended_Actions__r: data[key],
-            OtherActions: []
+            OtherActions: [],
+            parentId: 0,
         };
         categoryObj.children.push(statementObj);
     }
@@ -155,6 +156,7 @@ export default class AIPlanProcessTab extends LightningElement {
                             for (const recommendedAction of statementObj["Recommended_Actions__r"]) {
                                 if (recommendedAction["Action__c"].startsWith("Other")) {
                                     parent_id = recommendedAction["Id"];
+                                    statementObj.parentId = parent_id;
                                 }
                                 if (recommendedAction["Action__c"].startsWith("Other -") && recommendedAction["Action__c"].includes(action["ymcaswo_k2__Action__c"])) {
                                     isSelected = true;
@@ -319,10 +321,47 @@ handleSelection() {
   
 
   handleChange(event) {
+
     this.selectedOptions = event.detail;
+    let actionRecordId = event.target.dataset.id;
 
     if (!Array.isArray(this.selectedOptions) || this.selectedOptions.length === 0) {
-       console.error("No valid options received");
+        setOtherActionMutiple({ ActionRecordId: actionRecordId, otherAction: [], uniqueId: []})
+        .then(() => {
+            let found = false;
+
+    let clonedTrees = JSON.parse(JSON.stringify(this.trees));
+    
+    for (const mainCategoryObj of clonedTrees) {
+        if (found) break;
+        for (const categoryObj of mainCategoryObj.children) {
+            if (found) break;
+            for (const statementObj of categoryObj.children) {
+                if (found) break;
+                for (const recommendedAction of statementObj["Recommended_Actions__r"]) {
+                    if (recommendedAction["Id"] === actionRecordId) {
+                        if (this.selectedOptions.length === 0) {
+                            recommendedAction["Action__c"] = "Other";
+                        } else {
+                            const labels = this.selectedOptions.map(option => option.label).join(" | ");
+                            recommendedAction["Action__c"] = `Other - ${labels}`;
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    if (found) {
+        this.trees = clonedTrees;
+    }
+            return;
+        })
+        .catch(error => {
+            alert('OtherAction update failed! ' + error);
+        });
        return;
     }
 
@@ -330,20 +369,49 @@ handleSelection() {
     let uniqueIds = [];
     
     for (let i = 0; i < this.selectedOptions.length; i++) {
+        console.log(`Selected Option ${i}:`);
+        Object.keys(this.selectedOptions[i]).forEach(key => {
+        console.log(`  ${key}: ${this.selectedOptions[i][key]}`);
+    });
+
         otherActionList[i] = this.selectedOptions[i].label;
         uniqueIds[i] = this.selectedOptions[i].value;
     }
 
-    let actionRecordId = (this.selectedOptions[0] && this.selectedOptions[0].parent_id) ? this.selectedOptions[0].parent_id : null;
-
-    // alert("Other Actions: " + otherActionList);
-    // alert("Unique IDs: " + uniqueIds);
-    // alert("Action Record ID: " + actionRecordId);
+    actionRecordId = (this.selectedOptions[0] && this.selectedOptions[0].parent_id) ? this.selectedOptions[0].parent_id : null;
 
     if (actionRecordId) {
         setOtherActionMutiple({ ActionRecordId: actionRecordId, otherAction: otherActionList, uniqueId: uniqueIds})
             .then(() => {
-                // alert('OtherAction updated successfully!');
+                let found = false;
+
+    let clonedTrees = JSON.parse(JSON.stringify(this.trees));
+    
+    for (const mainCategoryObj of clonedTrees) {
+        if (found) break;
+        for (const categoryObj of mainCategoryObj.children) {
+            if (found) break;
+            for (const statementObj of categoryObj.children) {
+                if (found) break;
+                for (const recommendedAction of statementObj["Recommended_Actions__r"]) {
+                    if (recommendedAction["Id"] === actionRecordId) {
+                        if (this.selectedOptions.length === 0) {
+                            recommendedAction["Action__c"] = "Other";
+                        } else {
+                            const labels = this.selectedOptions.map(option => option.label).join(" | ");
+                            recommendedAction["Action__c"] = `Other - ${labels}`;
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    if (found) {
+        this.trees = clonedTrees;
+    }
             })
             .catch(error => {
                 alert('OtherAction update failed! ' + error);
