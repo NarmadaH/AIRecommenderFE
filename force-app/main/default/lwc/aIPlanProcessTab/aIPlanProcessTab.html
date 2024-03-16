@@ -1,6 +1,8 @@
 <template>
     <lightning-card title="AIPlanProcessTab" icon-name="custom:custom14">
 
+        <lightning-button class="uncheck-all-button" label="Uncheck All" onclick={confirmUncheckAll} variant="brand"></lightning-button>
+
         <template for:each={trees} for:item="mainCategory">
             <div class="main_cat_box" key={mainCategory.id}>
 
@@ -41,6 +43,7 @@
                                         <c-multi-select-combobox
                                         label="Options"
                                         name="options"
+                                        data-id={statement.parentId}
                                         options={statement.OtherActions}
                                         onchange={handleChange}
                                       ></c-multi-select-combobox>
