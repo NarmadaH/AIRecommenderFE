@@ -299,7 +299,17 @@ confirmUncheckAll() {
     }
 }
 
-uncheckAllActions() {
+isModalOpen = false;
+
+    openModal() {
+        this.isModalOpen = true;
+    }
+
+    closeModal() {
+        this.isModalOpen = false;
+    }
+
+    handleYesClick() {
     let actionIdsForUncheck = [];
     let clonedTrees = JSON.parse(JSON.stringify(this.trees));
     for (const mainCategoryObj of clonedTrees) {
@@ -331,6 +341,7 @@ uncheckAllActions() {
             console.error('Error unchecking actions: ' + error);
             alert('Error unchecking actions: ' + error);
         });
+        this.isModalOpen = false;
 }
 
 get dropdownClass() {
@@ -468,7 +479,30 @@ handleSelection() {
 
     setActionIsSelected({ActionRecordId: recordId, isSelected: checkboxValue})
         .then(result => {
-            // alert(`Record updated successfully.`);
+            let found = false;
+
+    let clonedTrees = JSON.parse(JSON.stringify(this.trees));
+    
+    for (const mainCategoryObj of clonedTrees) {
+        if (found) break;
+        for (const categoryObj of mainCategoryObj.children) {
+            if (found) break;
+            for (const statementObj of categoryObj.children) {
+                if (found) break;
+                for (const recommendedAction of statementObj["Recommended_Actions__r"]) {
+                    if (recommendedAction["Id"] === recordId) {
+                        recommendedAction["isSelected__c"] = checkboxValue;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    if (found) {
+        this.trees = clonedTrees;
+    }
         })
         .catch(error => {
             debugger;
