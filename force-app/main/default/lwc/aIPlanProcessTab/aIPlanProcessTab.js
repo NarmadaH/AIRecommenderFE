@@ -366,6 +366,11 @@ handleSelection() {
     this.selectedItems = labels.join(', ');
 }
 
+
+  refreshPage () {
+    window.location.reload();
+  }
+
    
 
   selectedOptions = [];

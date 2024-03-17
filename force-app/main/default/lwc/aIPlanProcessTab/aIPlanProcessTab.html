@@ -1,6 +1,10 @@
 <template>
     <lightning-card title="AIPlanProcessTab" icon-name="custom:custom14">
 
+        <div class="refresh_button">
+            <button class="button1_plan" onclick={refreshPage}>Update Plan Summary</button>
+        </div>
+
         <lightning-button class="uncheck-all-button" label="Uncheck All" onclick={openModal} variant="brand"></lightning-button>
 
         <template if:true={isModalOpen}>
