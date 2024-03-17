@@ -30,7 +30,7 @@ import getOtherActionList from '@salesforce/apex/PlanRelatedListHandler.getOther
 import setOtherAction from '@salesforce/apex/PlanRelatedListHandler.setOtherAction';
 import setOtherActionNew from '@salesforce/apex/PlanRelatedListHandler.setOtherActionNew';
 import setOtherActionMutiple from '@salesforce/apex/PlanRelatedListHandler.setOtherActionMutiple';
-
+import setActionsAsNotSelected from '@salesforce/apex/PlanRelatedListHandler.setActionsAsNotSelected'
 
 export default class AIPlanProcessTab extends LightningElement {
 
@@ -293,6 +293,57 @@ export default class AIPlanProcessTab extends LightningElement {
 @track selectedItems = '';
 @track isDropdownOpen = false;
 
+confirmUncheckAll() {
+    if(window.confirm("Are you sure you want to uncheck all?")) {
+        this.uncheckAllActions();
+    }
+}
+
+isModalOpen = false;
+
+    openModal() {
+        this.isModalOpen = true;
+    }
+
+    closeModal() {
+        this.isModalOpen = false;
+    }
+
+    handleYesClick() {
+    let actionIdsForUncheck = [];
+    let clonedTrees = JSON.parse(JSON.stringify(this.trees));
+    for (const mainCategoryObj of clonedTrees) {
+        for (const categoryObj of mainCategoryObj.children) {
+            for (const statementObj of categoryObj.children) {
+                for (const recommendedAction of statementObj["Recommended_Actions__r"]) {
+                    if (recommendedAction["isSelected__c"] == true) {
+                        actionIdsForUncheck.push(recommendedAction["Id"]);
+                    }
+                }
+            }
+        }
+    }
+
+    setActionsAsNotSelected({ actionRecordIds: actionIdsForUncheck })
+        .then(() => {
+            for (const mainCategoryObj of clonedTrees) {
+                for (const categoryObj of mainCategoryObj.children) {
+                    for (const statementObj of categoryObj.children) {
+                        for (const recommendedAction of statementObj["Recommended_Actions__r"]) {
+                            recommendedAction["isSelected__c"] = false;
+                        }
+                    }
+                }
+            }
+            this.trees = clonedTrees;
+        })
+        .catch(error => {
+            console.error('Error unchecking actions: ' + error);
+            alert('Error unchecking actions: ' + error);
+        });
+        this.isModalOpen = false;
+}
+
 get dropdownClass() {
     return this.isDropdownOpen ? 'myComboBox' : 'hidden-combo-box';
 }
@@ -428,7 +479,30 @@ handleSelection() {
 
     setActionIsSelected({ActionRecordId: recordId, isSelected: checkboxValue})
         .then(result => {
-            // alert(`Record updated successfully.`);
+            let found = false;
+
+    let clonedTrees = JSON.parse(JSON.stringify(this.trees));
+    
+    for (const mainCategoryObj of clonedTrees) {
+        if (found) break;
+        for (const categoryObj of mainCategoryObj.children) {
+            if (found) break;
+            for (const statementObj of categoryObj.children) {
+                if (found) break;
+                for (const recommendedAction of statementObj["Recommended_Actions__r"]) {
+                    if (recommendedAction["Id"] === recordId) {
+                        recommendedAction["isSelected__c"] = checkboxValue;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    if (found) {
+        this.trees = clonedTrees;
+    }
         })
         .catch(error => {
             debugger;
