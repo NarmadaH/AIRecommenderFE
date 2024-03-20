@@ -336,6 +336,7 @@ isModalOpen = false;
                 }
             }
             this.trees = clonedTrees;
+            this.refreshPage();
         })
         .catch(error => {
             console.error('Error unchecking actions: ' + error);
@@ -365,6 +366,11 @@ handleSelection() {
     let labels = this.options.filter(option => values.includes(option.value)).map(option => option.label);
     this.selectedItems = labels.join(', ');
 }
+
+
+  refreshPage () {
+    window.location.reload();
+  }
 
    
 
