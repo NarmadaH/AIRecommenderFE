@@ -1,0 +1,40 @@
+@isTest
+public class HerokuActionResponseWrapperTest {
+
+    @isTest
+    static void testHerokuActionResponseWrapper() {
+        // Create some test data for HerokuActionResponse objects
+        List<HerokuActionResponse> herokuActionResponseList = new List<HerokuActionResponse>();
+        
+        String responseText = 'Success';
+        String statement = 'Success Test Statement';
+        String settlementPlanId = 'Success Test Settlement Plan Id';
+        String responseId = 'Success Test Response Id';
+        List<RecommendedAction> actions = new List<RecommendedAction>();
+        // actions.add(new RecommendedAction('Action One'));
+        // actions.add(new RecommendedAction('Action Two'));
+        String statementCategory = 'Successful Test Category';
+        String statementMainCategory = 'Successful Test Main Category';
+        // ID lastModifiedId = '000000000000001';
+        
+        for (Integer i = 0; i < 5; i++) {
+            HerokuActionResponse herokuActionResponse = new HerokuActionResponse(
+                String.valueOf(i) + ': ' + responseText,
+                String.valueOf(i) + ': ' + statement,
+                String.valueOf(i) + ': ' + settlementPlanId,
+                String.valueOf(i) + ': ' + responseId,
+                new List<RecommendedAction>{new RecommendedAction('Action 1'), new RecommendedAction('Action 2')},
+                String.valueOf(i) + ': ' + statementCategory,
+                String.valueOf(i) + ': ' + statementMainCategory,
+                '000000000000001'
+            );
+            herokuActionResponseList.add(herokuActionResponse);
+        }
+
+        // Create a HerokuActionResponseWrapper object using the test data
+        HerokuActionResponseWrapper herokuActionResponseWrapper = new HerokuActionResponseWrapper(herokuActionResponseList);
+
+        // Perform assertions to verify the behavior of the HerokuActionResponseWrapper object
+        System.assertEquals(herokuActionResponseList, herokuActionResponseWrapper.getherokuActionResponseList(), 'HerokuActionResponseList should match');
+    }
+}

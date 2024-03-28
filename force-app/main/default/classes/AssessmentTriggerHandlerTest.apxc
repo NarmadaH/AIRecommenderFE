@@ -1,0 +1,102 @@
+@isTest
+public class AssessmentTriggerHandlerTest {
+
+    @isTest
+    static void testHandleUpdateAssessmentRequest() {
+        // Create some test data for AssessmentResponseCustom objects
+        List<AssessmentResponseCustom> assessmentResponseCustomList = new List<AssessmentResponseCustom>();
+        String responseText = '200';
+        String statement = 'This is the response statement.';
+        String responseId = 'Good';
+        String settlementPlanId = '0000';
+        String url = 'https://url.com';
+        String statementCategory = 'Category';
+        String statementMainCategory = 'Main Category';
+        // ID lastModifiedId = '000000000000000000';
+        ID lastModifiedId = '000000000000001';
+        for (Integer i = 0; i < 5; i++) {
+            AssessmentResponseCustom assessmentResponseCustom = new AssessmentResponseCustom(
+                // The necessary parameters are initialized here.
+                responseText, statement, responseId, settlementPlanId, url, statementCategory, statementMainCategory, lastModifiedId
+            );
+            assessmentResponseCustomList.add(assessmentResponseCustom);
+        }
+        
+        Test.setMock(HttpCalloutMock.class, new MockHerokuApi());
+        
+        // Call the handleUpdateAssessmentRequest method
+        AssessmentTriggerHandler.handleUpdateAssessmentRequest(assessmentResponseCustomList);
+
+        // Perform assertions to verify the behavior of the method
+        // You can assert that the method behaved as expected based on your logic
+        // For example, check if data was sent to the Heroku API and if any expected records were created or updated
+    }
+
+    @isTest
+    static void testCallHerokuApi() {
+        // Create a test data payload to simulate the call to the Heroku API
+        String testData = '{"test": "This is Test Data", "month": "October", "day": "01", year: "2023"}'; // Replace with your JSON test data
+        
+        List<AssessmentResponseCustom> assessmentResponseCustomList = new List<AssessmentResponseCustom>();
+        String responseText = '404';
+        String statement = 'This is the response statement.';
+        String responseId = 'Good';
+        String settlementPlanId = '0000';
+        String url = 'https://url.com';
+        String statementCategory = 'Category';
+        String statementMainCategory = 'Main Category';
+        // ID lastModifiedId = '000000000000000000';
+        ID lastModifiedId = '000000000000002';
+        for (Integer i = 0; i < 5; i++) {
+            AssessmentResponseCustom assessmentResponseCustom = new AssessmentResponseCustom(
+                // The necessary parameters are initialized here.
+                responseText, statement, responseId, settlementPlanId, url, statementCategory, statementMainCategory, lastModifiedId
+            );
+            assessmentResponseCustomList.add(assessmentResponseCustom);
+        }
+        
+        
+        Test.setMock(HttpCalloutMock.class, new MockHerokuApi());
+
+
+        Test.startTest();
+        // Call the private callHerokuApi method using Test.startTest()
+        // AssessmentTriggerHandler.callHerokuApi(testData);
+        AssessmentTriggerHandler.handleUpdateAssessmentRequest(assessmentResponseCustomList);
+        Test.stopTest();
+
+        // Perform assertions to verify the behavior of the callHerokuApi method
+        // You can assert that the HTTP callout was made and check the response
+    }
+
+    @isTest
+    static void testUpdateOrInsertActionList() {
+        // Create test data for HerokuActionResponse and related records
+        List<HerokuActionResponse> herokuActionResponseList = new List<HerokuActionResponse>();
+        
+        String statement = 'This is the Heroku Action Response.';
+    	String responseId = '200';
+   		String settlementPlanId = '000000000000003';
+    	String responseText = 'Success';
+        String statementCategory = '{"type": "category_assessment_trigger_handler"}';
+        String statementMainCategory = '{"type": "category_assessment_trigger_handler", "statement": "main"}';
+    	List<RecommendedAction> actions = new List<RecommendedAction>();
+    	// ID lastModifiedId = '0000000001';
+        ID lastModifiedId = '000000000000003';
+        
+        
+        for (Integer i = 0; i < 5; i++) {
+            HerokuActionResponse herokuActionResponse = new HerokuActionResponse(
+                // Passing the parameters into the HerokuActionResponse constructor.
+                responseText, statement, settlementPlanId, responseId, actions, statementCategory, statementMainCategory, lastModifiedId
+            );
+            herokuActionResponseList.add(herokuActionResponse);
+        }
+
+        
+        //AssessmentTriggerHandler.updateOrInsertActionList(herokuActionResponseList);
+		// AssessmentTriggerHandler.
+        // Perform assertions to verify the behavior of the method
+        // Check if records were created, updated, or deleted as expected
+    }
+}
