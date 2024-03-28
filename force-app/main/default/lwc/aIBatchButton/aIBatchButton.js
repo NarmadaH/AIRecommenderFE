@@ -101,7 +101,9 @@ getmodalData(){
             }})
             .catch(error => {
                 console.log('Error calling handleBatchAssessmentResponses');
+                error = 'Error - Generating AI plan failed';
                 this.modalError = 'Error - Generating AI plan failed'; 
+                console.log(error);
                 reject(error); 
             });
     });
