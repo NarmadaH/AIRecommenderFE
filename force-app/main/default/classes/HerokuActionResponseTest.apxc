@@ -1,0 +1,32 @@
+@isTest
+public class HerokuActionResponseTest {
+
+    @isTest
+    static void testHerokuActionResponse() {
+        // Here is the sample test data for the HerokuActionResponse
+        String responseText = 'Success';
+        String statement = 'Success Test Statement';
+        String settlementPlanId = 'Success Test Settlement Plan Id';
+        String responseId = 'Success Test Response Id';
+        List<RecommendedAction> actions = new List<RecommendedAction>();
+        // actions.add(new RecommendedAction('Action One'));
+        // actions.add(new RecommendedAction('Action Two'));
+        String statementCategory = 'Successful Test Category';
+        String statementMainCategory = 'Successful Test Main Category';
+        ID lastModifiedId = '000000000000001';
+
+        // Create a HerokuActionResponse object using the test data
+        HerokuActionResponse herokuActionResponse = new HerokuActionResponse(
+            responseText, statement, settlementPlanId, responseId, actions, statementCategory, statementMainCategory, lastModifiedId
+        );
+
+        // Perform assertions to verify the behavior of the HerokuActionResponse object
+        System.assertEquals(settlementPlanId, herokuActionResponse.getSettlementPlanId(), 'Settlement Plan Id should match');
+        System.assertEquals(statement, herokuActionResponse.getStatement(), 'Statement should match');
+        System.assertEquals(responseId, herokuActionResponse.getResponseId(), 'Response Id should match');
+        System.assertEquals(actions, herokuActionResponse.getActions(), 'Actions should match');
+        System.assertEquals(statementCategory, herokuActionResponse.getStatementCategory(), 'Statement Category should match');
+        System.assertEquals(statementMainCategory, herokuActionResponse.getStatementMainCategory(), 'Statement Main Category should match');
+        System.assertEquals(lastModifiedId, herokuActionResponse.getLastModifiedId(), 'Last Modified Id should match');
+    }
+}

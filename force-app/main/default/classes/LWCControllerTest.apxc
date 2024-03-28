@@ -1,0 +1,38 @@
+@isTest
+private class LWCControllerTest {
+
+    @isTest
+    static void testHandleBatchAssessmentResponses() {
+        // Create a test Assessment record
+        // Assessment__c testAssessment = new Assessment__c();
+        // testAssessment.Name = 'Test Assessment';
+        // Set other required fields as needed
+        // insert testAssessment;
+
+        // Call the handleBatchAssessmentResponses method
+        String result = LWCController.handleBatchAssessmentResponses('a0vMm000001Pb5RIAS');
+
+        // Add assertions to verify the result
+        System.assertEquals(null, result); // Replace 'ExpectedResult' with the expected outcome of the method
+        
+        // You can also add additional assertions as needed to validate the behavior of the method.
+    }
+	
+    /*
+    @isTest
+    static void testHandleAIIntergration() {
+        // Create a test Assessment record
+        // Assessment__c testAssessment = new Assessment__c();
+        // testAssessment.Name = 'Test Assessment';
+        // Set other required fields as needed
+        // insert testAssessment;
+
+        // Call the handleAIIntergration method
+        String result = LWCController.handleAIIntergration('');
+
+        // Add assertions to verify the result
+        System.assertEquals('Error! - Error - AI Plan Intergration failed due to empty Assesment ID', result); // Replace 'ExpectedResult' with the expected outcome of the method
+        
+        // You can also add additional assertions as needed to validate the behavior of the method.
+    }*/
+}

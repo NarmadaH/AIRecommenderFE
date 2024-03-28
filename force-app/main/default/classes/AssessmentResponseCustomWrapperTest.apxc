@@ -1,0 +1,27 @@
+@isTest
+public class AssessmentResponseCustomWrapperTest {
+	
+    @isTest
+    static void testAssessmentResponseCustomWrapper() {
+        List <AssessmentResponseCustom> assessmentResponseCustomWrapperList = new List<AssessmentResponseCustom>();
+        
+        String responseText = '200';
+        String statement = 'This is the response statement.';
+        String responseId = 'Good';
+        String settlementPlanId = '0000';
+        String url = 'https://url.com';
+        String statementCategory = 'Category';
+        String statementMainCategory = 'Main Category';
+        ID lastModifiedId = '000000000000000000';
+
+        for (Integer i = 0; i < 5; i++) {
+            assessmentResponseCustom assessmentRespCust = new AssessmentResponseCustom(responseText, statement, responseId, settlementPlanId, url, statementCategory, statementMainCategory, lastModifiedId);
+            assessmentResponseCustomWrapperList.add(assessmentRespCust);
+        }
+        
+        AssessmentResponseCustomWrapper assessmentRespCustWrapper = new AssessmentResponseCustomWrapper(assessmentResponseCustomWrapperList);
+    	List <AssessmentResponseCustom> result = assessmentRespCustWrapper.getAssessmentResponseCustomList();
+        System.assertEquals(assessmentResponseCustomWrapperList.size(), result.size(), 'Size of the lists should be equivalent.');
+        
+    }
+}
