@@ -222,7 +222,7 @@ public with sharing class PlanRelatedListHandler {
 
         List<Auto_Recomandation__c> childRecords = [SELECT Id,Name, Statement__c, Statement_Category__c, Statement_Main_Catergory__c, Status__c, 
         (SELECT Id, Name, Action__c, Other_Data__c, Chosen__c, Order__c FROM Recommended_Actions__r WHERE isSelected__c = 1 ORDER BY Order__c) 
-        FROM Auto_Recomandation__c WHERE Auto_Settlement_Plan__c = :planId];
+        FROM Auto_Recomandation__c WHERE Auto_Settlement_Plan__c = :planId ORDER BY Statement_Main_Catergory__c, Statement_Category__c];
 
         for (Auto_Recomandation__c child : childRecords) 
         {
@@ -250,6 +250,8 @@ public with sharing class PlanRelatedListHandler {
     
     @AuraEnabled(cacheable=true)
     public static List<ymcaswo_k2__Action__c> getAllPlanOtherActionLists (String planId){
+        
+        System.debug('CALL getAllPlanOtherActionLists');
         
         List<ymcaswo_k2__Action__c> allActions = new List<ymcaswo_k2__Action__c>();
          
@@ -285,10 +287,17 @@ public with sharing class PlanRelatedListHandler {
                 String category = topicMap.get('Statement_Main_Catergory__c');
                 String indicator = topicMap.get('Statement_Category__c');
                 
+                String unquieDropdown = category + '|' + indicator;
+                
                 // Call getOtherActionList with mainCategory and category as parameters
                 List<ymcaswo_k2__Action__c> actionsForTopic = getOtherActionList(category, indicator);
                 
-                 System.debug('getOtherActionList size - ' + actionsForTopic.size() +  ' | ' + category +  ' | ' + indicator);
+                System.debug('getOtherActionList size - ' + actionsForTopic.size() +  ' | ' + category +  ' | ' + indicator);
+                
+                for (ymcaswo_k2__Action__c act : actionsForTopic){
+                    act.AIAction_Dropdown__c = unquieDropdown;
+                    System.debug('Updated XXX - ' + act.AIAction_Dropdown__c);
+                }
                 
                 // Add the results to the overall list of actions
                 allActions.addAll(actionsForTopic);
@@ -301,8 +310,34 @@ public with sharing class PlanRelatedListHandler {
         return allActions;
 
     }
-    
+
+    @AuraEnabled
+    public static void setActionsAsNotSelected(List<String> actionRecordIds) {
+        
+        System.debug('setActionsAsNotSelected Called');
+        
+        if (!actionRecordIds.isEmpty()) {
+            
+            for (String act : actionRecordIds){                
+                System.debug('Unselect Action Id - ' + act);
+            }
+            
+            List<Recommended_Action__c> recActionsToUpdate = [
+                SELECT Id, Name, Action__c, Other_Data__c, isSelected__c 
+                FROM Recommended_Action__c 
+                WHERE Id IN :actionRecordIds
+            ];
+            
+            for (Recommended_Action__c recAction : recActionsToUpdate) {
+                recAction.isSelected__c = 0;
+            }
+            
+            update recActionsToUpdate;
+            System.debug('setActionsAsNotSelected is Successful');
+        }
+        else {
+           System.debug('setActionsAsNotSelected List is empty'); 
+        }
+    }      
     
 }
-    
-    
